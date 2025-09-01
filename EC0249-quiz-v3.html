@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EC0249 – Cuestionario interactivo (v3)</title>
+  <style>
+    :root { --bg:#0f172a; --card:#111827; --text:#e5e7eb; --accent-2:#3b82f6; --warn:#ef4444; --ok:#10b981; --border:#1f2937; --shadow:0 10px 25px rgba(0,0,0,.35);} *{box-sizing:border-box}
+    html,body{height:100%} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial,Apple Color Emoji,Segoe UI Emoji;background:linear-gradient(180deg,#0b1220,#0f172a);color:var(--text)}
+    .container{max-width:1000px;margin:24px auto;padding:16px}
+    header{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow)}
+    header h1{font-size:clamp(1.1rem,2.5vw,1.35rem);margin:0} header .meta{font-size:.95rem;color:#cbd5e1}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    button{border:1px solid var(--border);background:#0b1220;color:#fff;padding:10px 14px;border-radius:12px;cursor:pointer;transition:transform .05s ease,background .2s ease,border-color .2s ease}
+    button:hover{background:#0f172a} button:active{transform:translateY(1px)} .btn-primary{background:var(--accent-2);border-color:#1d4ed8} .btn-danger{background:var(--warn);border-color:#b91c1c} .btn-success{background:var(--ok);border-color:#047857}
+    .score{display:inline-flex;gap:10px;align-items:center;padding:8px 12px;border-radius:12px;background:#0b1220;border:1px solid var(--border)}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-top:16px;box-shadow:var(--shadow)} .question-title{font-weight:700;font-size:1.05rem;margin:0 0 10px}
+    .badge{display:inline-block;padding:2px 8px;border-radius:9999px;font-size:.8rem;border:1px solid var(--border);color:#cbd5e1} .badge-elem1{background:rgba(59,130,246,.12)} .badge-elem2{background:rgba(34,197,94,.12)} .badge-elem3{background:rgba(234,179,8,.12)}
+    .options{display:grid;gap:8px;margin:8px 0 6px} .option{display:flex;gap:10px;align-items:center;border:1px solid var(--border);border-radius:12px;padding:10px 12px;cursor:pointer;background:#0b1220} .option input{margin:0}
+    .option.correct{outline:2px solid var(--ok);background:rgba(16,185,129,.08)} .option.incorrect{outline:2px solid var(--warn);background:rgba(239,68,68,.08)}
+    .feedback{margin-top:8px;font-size:.95rem} .feedback.ok{color:#86efac} .feedback.err{color:#fecaca}
+    .footer{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:16px;flex-wrap:wrap}
+    .muted{color:#94a3b8} .hidden{display:none!important} .option:focus-within{outline:2px dashed var(--accent-2)}
+    @media (max-width:640px){.controls{width:100%}}
+    #err{background:#7f1d1d;color:#fecaca;border:1px solid #b91c1c;padding:10px 12px;border-radius:12px;margin-top:16px;display:none}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>EC0249 – Cuestionario interactivo (banco completo, v3)</h1>
+        <div class="meta">Orden aleatorio · Retro inmediata · Termina cuando quieras</div>
+        <div class="meta" id="metaCount">Cargando banco…</div>
+      </div>
+      <div class="controls">
+        <span class="score" id="scoreBox">✅ 0 correctas · ❌ 0 incorrectas</span>
+        <button id="btnPrev" class="btn" type="button" title="Página anterior">◀︎ Anterior</button>
+        <button id="btnNext" class="btn" type="button" title="Página siguiente">Siguiente ▶︎</button>
+        <button id="btnEnd" class="btn btn-danger" type="button" title="Terminar ahora y ver calificación">Terminar ahora</button>
+        <button id="btnRestart" class="btn btn-primary" type="button" title="Volver a tomar con nuevo orden">Reiniciar</button>
+      </div>
+    </header>
+
+    <div id="err" role="alert"></div>
+    <section id="quiz"></section>
+    <div id="results" class="card hidden" aria-live="polite"></div>
+  </div>
+
+  <script>
+  (function(){
+    'use strict';
+    function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+
+    // ===== BANCO COMPLETO (92) =====
+    const QUESTIONS = [
+      {id:1, elem:1, type:'mc', q:'¿Cuál es el propósito principal de la entrevista en consultoría?', options:['Convencer al entrevistado','Obtener información del problema','Probar la solución diseñada','Medir indicadores'], answer:1, explanation:'La entrevista busca obtener información relativa a la situación o problema planteado.'},
+      {id:2, elem:1, type:'tf', q:'En una entrevista semiestructurada se usan preguntas guía y se permiten nuevas según el contexto.', options:['Verdadero','Falso'], answer:0, explanation:'La semiestructurada combina estructura y flexibilidad.'},
+      {id:3, elem:1, type:'mc', q:'¿Qué acción inicial y de cierre es obligatoria en entrevista?', options:['Prometer resultados y pedir firma','Dar nombre/propósito y agradecer al cierre','Presentar plan de trabajo y cobrar','Evitar registrar respuestas'], answer:1, explanation:'Debes presentarte, explicar propósito, registrar y cerrar agradeciendo.'},
+      {id:4, elem:1, type:'mc', q:'¿Cuál NO es un tipo de entrevista listado?', options:['Estructurada','Semiestructurada','No estructurada','Experimental'], answer:3, explanation:'\"Experimental\" no es un tipo contemplado en el estándar.'},
+      {id:5, elem:1, type:'mc', q:'¿Qué debe incluir un cuestionario?', options:['Datos del consultor','Espacio para comentarios finales','Opinión del evaluador','Respuestas del consultor'], answer:1, explanation:'El cuestionario contempla comentarios finales y agradecimientos.'},
+      {id:6, elem:1, type:'tf', q:'Los cuestionarios cerrados facilitan procesamiento estadístico.', options:['Verdadero','Falso'], answer:0, explanation:'Las respuestas son predeterminadas y cuantificables.'},
+      {id:7, elem:1, type:'mc', q:'Diferencia clave de un cuestionario abierto frente a uno cerrado:', options:['Abierto: libre y detallado; difícil de procesar','Abierto: opciones fijas; fácil de procesar','Cerrado: libre; difícil de procesar','No hay diferencia'], answer:0, explanation:'Abierto = riqueza cualitativa; Cerrado = análisis estadístico.'},
+      {id:8, elem:1, type:'mc', q:'Frase que SÍ debe aparecer en el cuestionario:', options:['Su información será confidencial','Se compartirá sin restricción','No requiere instrucciones','Sin agradecimientos'], answer:0, explanation:'La confidencialidad es requisito del estándar.'},
+      {id:9, elem:1, type:'mc', q:'¿Qué es un indicador?', options:['Un informe final','Una medida de avance o resultado','Una entrevista','Un plan de trabajo'], answer:1, explanation:'Indicador = referencia para medir avance/resultados.'},
+      {id:10, elem:1, type:'tf', q:'Los indicadores solo miden costos, no calidad.', options:['Verdadero','Falso'], answer:1, explanation:'También miden calidad, tiempo, satisfacción, etc.'},
+      {id:11, elem:3, type:'mc', q:'Ejemplo de indicador de avance por etapa:', options:['Cantidad de opiniones','% de actividades completadas según calendario','Nombre del consultor','Número de juntas realizadas (sin meta)'], answer:1, explanation:'El indicador debe vincularse a resultados/tiempos esperados.'},
+      {id:12, elem:3, type:'mc', q:'Un buen indicador debe ser:', options:['Ambiguo','Claro, relevante y medible','Exclusivo del consultor','Sin relación a objetivos'], answer:1, explanation:'Debe ser específico, relevante y verificable.'},
+      {id:13, elem:1, type:'mc', q:'Diferencia correcta entre información interna y externa:', options:['Interna: pública; Externa: del consultante','Interna: del consultante; Externa: pública o del consultor','Ambas públicas','Interna solo financiera'], answer:1, explanation:'Interna = propia del consultante; Externa = pública o del consultor.'},
+      {id:14, elem:1, type:'tf', q:'Una muestra representativa refleja a la población de estudio.', options:['Verdadero','Falso'], answer:0, explanation:'Representatividad es clave para inferir correctamente.'},
+      {id:15, elem:1, type:'mc', q:'¿Cuál NO es característica deseable de una muestra?', options:['Representatividad','Pertinencia','Aleatoriedad','Subjetividad'], answer:3, explanation:'Subjetividad resta validez.'},
+      {id:16, elem:1, type:'mc', q:'Ejemplos correctos de fuentes internas y externas:', options:['Internas: manuales y reportes; Externas: INEGI y estudios sectoriales','Internas: redes sociales; Externas: gastos de nómina','Internas: Wikipedia; Externas: archivos internos','No aplica'], answer:0, explanation:'Manuales/reportes (internos) y estadísticas públicas (externas).'},
+      {id:17, elem:1, type:'mc', q:'Primer paso en investigación de problemas:', options:['Aplicar cuestionarios','Evaluar información','Definir el problema','Hacer la propuesta'], answer:2, explanation:'Sin una definición clara, el resto se desordena.'},
+      {id:18, elem:1, type:'tf', q:'La investigación debe incluir entrevistas, cuestionarios, observación y documental.', options:['Verdadero','Falso'], answer:0, explanation:'Se triangula la información para solidez.'},
+      {id:19, elem:1, type:'mc', q:'Al evaluar información, el consultor debe:', options:['Guardar sin analizar','Verificar congruencia, pertinencia y validez','Eliminar lo que no coincide con su hipótesis','Quedarse con opiniones'], answer:1, explanation:'Se busca robustez analítica y objetividad.'},
+      {id:20, elem:1, type:'mc', q:'¿Qué documento contiene instrucciones de llenado y confidencialidad?', options:['Guía de entrevista','Cuestionario','Registro de acuerdos','Plan de trabajo'], answer:1, explanation:'El cuestionario debe explicitar propósito, instrucciones y confidencialidad.'},
+      {id:21, elem:1, type:'mc', q:'Acción obligatoria durante la entrevista:', options:['Prometer resultados','Registrar respuestas','Pedir firma de propuesta','Dar recomendaciones finales'], answer:1, explanation:'Registrar asegura trazabilidad y evidencia.'},
+      {id:22, elem:1, type:'tf', q:'Cerrar la entrevista agradeciendo es desempeño esperado.', options:['Verdadero','Falso'], answer:0, explanation:'Es parte del protocolo de cierre.'},
+      {id:23, elem:1, type:'mc', q:'La guía de entrevista debe incluir:', options:['Propósito, actividades del entrevistado, información a solicitar y cierre','Plan de pagos','Riesgos del proyecto','Cronograma detallado'], answer:0, explanation:'Elementos mínimos requeridos por el estándar.'},
+      {id:24, elem:1, type:'mc', q:'¿Qué NO pertenece al reporte de metodología?', options:['Programa de entrevistas','Áreas involucradas','Estudios/pruebas a realizar','Resultados de implantación definitiva'], answer:3, explanation:'La implantación es posterior a la identificación.'},
+      {id:25, elem:1, type:'tf', q:'El programa de búsqueda documental incluye información interna y externa.', options:['Verdadero','Falso'], answer:0, explanation:'Debe contemplar ambas fuentes.'},
+      {id:26, elem:1, type:'mc', q:'El reporte de visita de campo incluye:', options:['Objetivo, alcance, observaciones y resultados','Plan de pagos','Código de ética firmado','Benchmark de mercado'], answer:0, explanation:'Cuatro elementos mínimos.'},
+      {id:27, elem:1, type:'mc', q:'¿Qué protege datos personales en un cuestionario?', options:['Agradecimientos','Texto de confidencialidad','Comentarios finales','Datos del consultor'], answer:1, explanation:'La nota de privacidad es obligatoria.'},
+      {id:28, elem:1, type:'tf', q:'El cuestionario debe pedir datos del consultor en vez del respondente.', options:['Verdadero','Falso'], answer:1, explanation:'Debe haber espacio para datos de quien contesta.'},
+      {id:29, elem:1, type:'mc', q:'Una instrucción de llenado correcta sería:', options:['Responda como quiera','Marque una sola opción por pregunta','No hay instrucciones','No conteste si no quiere'], answer:1, explanation:'Claridad y precisión facilitan calidad de datos.'},
+      {id:30, elem:1, type:'mc', q:'Sección NO obligatoria del cuestionario según EC0249:', options:['Propósito','Firmas del evaluador','Instrucciones de llenado','Agradecimientos'], answer:1, explanation:'El evaluador no firma cuestionarios.'},
+      {id:31, elem:1, type:'mc', q:'Afectación de la situación actual es:', options:['Catálogo de riesgos','Diferencia entre situación deseada y actual','Plan de trabajo','Reporte de campo'], answer:1, explanation:'Definición de glosario del estándar.'},
+      {id:32, elem:1, type:'tf', q:'Interna = del consultante; Externa = pública o del consultor.', options:['Verdadero','Falso'], answer:0, explanation:'Definición del glosario EC0249.'},
+      {id:33, elem:3, type:'mc', q:'Indicador de avance adecuado para plan de trabajo:', options:['% de actividades completadas por etapa','Nombre del consultante','Listado de reuniones','Color del documento'], answer:0, explanation:'Vinculado a calendario y resultados.'},
+      {id:34, elem:3, type:'mc', q:'El plan de trabajo debe incluir:', options:['Confidencialidad y PI','Actividades y recursos','Perfil del evaluador','Historial del consultor'], answer:1, explanation:'Confidencialidad/PI van en registro de acuerdos.'},
+      {id:35, elem:3, type:'tf', q:'Las actividades deben tener calendario, responsable, indicadores, control y seguimiento.', options:['Verdadero','Falso'], answer:0, explanation:'Listado explícito del estándar.'},
+      {id:36, elem:3, type:'mc', q:'Elemento del registro de acuerdos:', options:['Resultados de implantación definitiva','Cláusula de confidencialidad','Plan de entrevistas','Guía de observación'], answer:1, explanation:'También incluye alcance, tiempos y condiciones de pago.'},
+      {id:37, elem:3, type:'mc', q:'¿Qué NO va en la propuesta de trabajo?', options:['Antecedentes/diagnóstico','Riesgos del proyecto','Responsabilidades de ambas partes','Cronograma de pagos del evaluador'], answer:3, explanation:'Se incluyen costos estimados, no pagos del evaluador.'},
+      {id:38, elem:3, type:'tf', q:'En la presentación debes explicar costo/beneficio y responder dudas.', options:['Verdadero','Falso'], answer:0, explanation:'Desempeño obligatorio.'},
+      {id:39, elem:3, type:'mc', q:'El alcance en la propuesta se menciona para:', options:['Negociar honorarios','Delimitar qué incluye/no incluye y responsabilidades','Cumplir formalidad sin efecto','Inflar el costo'], answer:1, explanation:'Alinea expectativas y responsabilidades.'},
+      {id:40, elem:2, type:'mc', q:'¿A qué elemento pertenece el reporte de afectaciones encontradas?', options:['Elemento 1','Elemento 2','Elemento 3','Ninguno'], answer:1, explanation:'Es producto del Elemento 2.'},
+      {id:41, elem:1, type:'mc', q:'El documento que describe el problema debe incluir:', options:['Datos del consultor','Afectación, alcance, integración e interpretación','Plan de pagos','Cronograma de implantación'], answer:1, explanation:'Son los cuatro requisitos del estándar.'},
+      {id:42, elem:1, type:'tf', q:'La afectación debe ser congruente con la integración de información.', options:['Verdadero','Falso'], answer:0, explanation:'Consistencia interna del diagnóstico.'},
+      {id:43, elem:1, type:'mc', q:'Diferencia correcta entre problema y afectación:', options:['Son equivalentes','Problema: planteamiento inicial; Afectación: brecha actual vs deseada','Problema: gastos; Afectación: calidad','No hay diferencia'], answer:1, explanation:'Se complementan pero no son lo mismo.'},
+      {id:44, elem:1, type:'mc', q:'¿Qué documento explica cómo se evaluó la información?', options:['Registro de acuerdos','Reporte de metodología','Plan de trabajo','Cuestionario'], answer:1, explanation:'Debe detallar el método y evaluación.'},
+      {id:45, elem:1, type:'tf', q:'El programa de entrevistas se incluye en el reporte de metodología.', options:['Verdadero','Falso'], answer:0, explanation:'Es uno de sus apartados.'},
+      {id:46, elem:1, type:'mc', q:'Ejemplo de fuente documental externa válida:', options:['Manual interno','Estadísticas INEGI','Borradores sin autoría','Notas personales'], answer:1, explanation:'INEGI es fuente externa confiable.'},
+      {id:47, elem:2, type:'mc', q:'El reporte de afectaciones debe incluir:', options:['Diagnóstico financiero','Metodología, afectaciones y definición detallada de la situación','Propuesta de trabajo','Informe de entrevistas'], answer:1, explanation:'Trilogía mínima del reporte.'},
+      {id:48, elem:2, type:'tf', q:'La solución diseñada incluye beneficios, desventajas, justificación y costo/beneficio.', options:['Verdadero','Falso'], answer:0, explanation:'Todos son obligatorios.'},
+      {id:49, elem:2, type:'mc', q:'Ejemplo válido de desventaja a documentar:', options:['Resistencia al cambio','Mayor productividad inmediata','Menor tiempo de ciclo sin inversión','Aumento de satisfacción instantánea'], answer:0, explanation:'Debe contemplarse el riesgo humano de adopción.'},
+      {id:50, elem:2, type:'mc', q:'Actitud evaluada en Elemento 2:', options:['Orden','Limpieza','Responsabilidad','Puntualidad'], answer:2, explanation:'Implica ética, confidencialidad y privacidad.'},
+      {id:51, elem:3, type:'mc', q:'Sobre responsables en la presentación:', options:['Solo del consultante','Solo del consultor','De ambos','Nadie'], answer:2, explanation:'Se aclaran roles de ambas partes.'},
+      {id:52, elem:3, type:'tf', q:'Debes explicar implicaciones de implantación durante la exposición.', options:['Verdadero','Falso'], answer:0, explanation:'Es desempeño explícito.'},
+      {id:53, elem:3, type:'mc', q:'La descripción detallada de la solución incluye:', options:['Etapas, resultados, indicadores, controles y recursos','Solo costos','Solo cronograma','Solo entregables del consultor'], answer:0, explanation:'Debe cubrir gestión integral de la instalación.'},
+      {id:54, elem:3, type:'mc', q:'El plan de trabajo debe:', options:['Definir cláusulas legales','Describir actividades y recursos','Incluir CV del consultor','Definir propiedad intelectual'], answer:1, explanation:'Lo legal va en el registro de acuerdos.'},
+      {id:55, elem:3, type:'tf', q:'El registro de acuerdos incluye cláusula de propiedad intelectual.', options:['Verdadero','Falso'], answer:0, explanation:'Es parte obligatoria.'},
+      {id:56, elem:3, type:'mc', q:'Ejemplo de riesgo a documentar en la propuesta:', options:['Retrasos de insumos','Que el logo sea azul','Que el consultor use Windows','Que el pizarrón esté lejos'], answer:0, explanation:'Debe impactar cronograma/costo/calidad.'},
+      {id:57, elem:3, type:'mc', q:'Actitudes en Elemento 3:', options:['Responsabilidad','Limpieza y orden','Creatividad','Puntualidad'], answer:1, explanation:'Se evalúa presentación documental y secuencia.'},
+      {id:58, elem:3, type:'tf', q:'La propuesta de trabajo especifica entregables del consultor.', options:['Verdadero','Falso'], answer:0, explanation:'Y también responsabilidades de ambas partes.'},
+      {id:59, elem:3, type:'mc', q:'¿Por qué incluir costo estimado?', options:['Para inflar presupuesto','Para evaluar viabilidad y ROI','Para impresionar','No es necesario'], answer:1, explanation:'Permite análisis costo/beneficio.'},
+      {id:60, elem:3, type:'mc', q:'Documento que establece condiciones de pago:', options:['Propuesta de trabajo','Registro de acuerdos','Plan de trabajo','Guía de entrevista'], answer:1, explanation:'El registro formaliza pagos y cláusulas.'},
+      {id:61, elem:1, type:'mc', q:'Desempeño obligatorio al iniciar entrevista:', options:['Explicar solución definitiva','Presentarse y explicar propósito','Cobrar honorarios','Entregar plan de trabajo'], answer:1, explanation:'Protocolo de inicio correcto.'},
+      {id:62, elem:1, type:'tf', q:'Solicitar información verbal o escrita es desempeño de entrevista.', options:['Verdadero','Falso'], answer:0, explanation:'Debes pedir evidencias y formato.'},
+      {id:63, elem:1, type:'mc', q:'Actitudes evaluadas en Elemento 1:', options:['Responsabilidad','Limpieza y orden','Creatividad','Puntualidad'], answer:1, explanation:'Se evalúa presentación y secuencia metodológica.'},
+      {id:64, elem:1, type:'mc', q:'¿Qué refleja el valor de orden?', options:['Cualquier formato','Seguir secuencia metodológica','Omitir etapas para ahorrar tiempo','Desorden creativo'], answer:1, explanation:'El orden asegura reproducibilidad.'},
+      {id:65, elem:2, type:'mc', q:'¿Cuál pertenece al Elemento 2?', options:['Reporte de visita de campo','Reporte de afectaciones encontradas','Guía de entrevista','Registro de acuerdos'], answer:1, explanation:'Producto clave del Elemento 2.'},
+      {id:66, elem:2, type:'tf', q:'La solución diseñada incluye análisis costo/beneficio.', options:['Verdadero','Falso'], answer:0, explanation:'Obligatorio en el estándar.'},
+      {id:67, elem:2, type:'mc', q:'Actitud/valor evaluado en Elemento 2:', options:['Limpieza','Orden','Responsabilidad','Innovación'], answer:2, explanation:'Énfasis en ética y privacidad.'},
+      {id:68, elem:2, type:'mc', q:'Firmar aviso de privacidad demuestra:', options:['Orden','Limpieza','Responsabilidad','Puntualidad'], answer:2, explanation:'Cumplimiento normativo.'},
+      {id:69, elem:3, type:'mc', q:'Durante la exposición debes:', options:['Evitar preguntas','Explicar alcance, ventajas/desventajas y recursos','Leer sin interactuar','Ocultar entregables'], answer:1, explanation:'Desempeño oral esperado.'},
+      {id:70, elem:3, type:'tf', q:'Responder dudas y explicar costo/beneficio es obligatorio.', options:['Verdadero','Falso'], answer:0, explanation:'Parte del desempeño.'},
+      {id:71, elem:3, type:'mc', q:'Actitudes evaluadas en Elemento 3:', options:['Responsabilidad','Limpieza y orden','Creatividad','Carisma'], answer:1, explanation:'Se observa en documentos y exposición.'},
+      {id:72, elem:3, type:'mc', q:'¿Qué NO es desempeño de presentación?', options:['Describir propuesta','Mencionar responsables de ambos','Explicar etapas y entregables','Mostrar códigos de ética firmados'], answer:3, explanation:'Los códigos pertenecen al Elemento 2.'},
+      {id:73, elem:1, type:'mc', q:'Actitud principal del Elemento 1:', options:['Responsabilidad','Limpieza y orden','Puntualidad','Innovación'], answer:1, explanation:'Claramente especificada en el estándar.'},
+      {id:74, elem:2, type:'mc', q:'Actitud principal del Elemento 2:', options:['Responsabilidad','Limpieza','Orden','Creatividad'], answer:0, explanation:'Única en ese elemento.'},
+      {id:75, elem:3, type:'mc', q:'Actitud principal del Elemento 3:', options:['Orden y limpieza','Responsabilidad','Liderazgo','Resiliencia'], answer:0, explanation:'Como en el Elemento 1.'},
+      {id:76, elem:3, type:'tf', q:'En todos los elementos se evalúa la misma actitud.', options:['Verdadero','Falso'], answer:1, explanation:'Cada elemento tiene foco diferente.'},
+      {id:77, elem:2, type:'mc', q:'Responsabilidad en EC0249 implica:', options:['Firmar y cumplir ética, confidencialidad y privacidad','Entregar documentos sin errores','Hablar en público','Hacer benchmarking'], answer:0, explanation:'Cumplimiento ético y legal.'},
+      {id:78, elem:1, type:'mc', q:'Limpieza significa:', options:['Documentos sin tachaduras y claros','Entrega rápida','Mucho contenido','Diseño gráfico avanzado'], answer:0, explanation:'Forma y legibilidad adecuada.'},
+      {id:79, elem:1, type:'mc', q:'Orden significa:', options:['Secuencia metodológica correcta','Orden alfabético siempre','Orden por color','Orden por tamaño'], answer:0, explanation:'Seguir la metodología del estándar.'},
+      {id:80, elem:3, type:'mc', q:'Evidencia para concluir limpieza, orden y responsabilidad:', options:['Docs con correcciones, sin roles y sin acuerdos','Docs claros y secuenciados, y firmas de ética/confidencialidad/privacidad','Solo diapositivas bonitas','Solo discurso persuasivo'], answer:1, explanation:'Integra forma, proceso y compromiso ético.'},
+      {id:81, elem:3, type:'mc', q:'Te preguntan entregables por etapa. ¿Respuesta correcta?', options:['Lo vemos al final','Cada etapa con entregables y fechas: Diagnóstico, Plan, Propuesta final','No hay entregables','Un solo entregable al final'], answer:1, explanation:'Debes enumerar entregables por etapa con claridad temporal.'},
+      {id:82, elem:3, type:'mc', q:'Piden ventajas y desventajas. ¿Qué haces?', options:['Solo ventajas','Solo desventajas','Ambas con argumentos','Evasión'], answer:2, explanation:'Debes exponer ambas con soporte.'},
+      {id:83, elem:3, type:'mc', q:'Insisten en costos. Según estándar debes:', options:['Evitar el tema','Explicar costo/beneficio','Remitir a RRHH','Decir que no aplica'], answer:1, explanation:'Es desempeño explícito.'},
+      {id:84, elem:3, type:'mc', q:'Quieren detalle de responsabilidades. Debes:', options:['Decir que lo ven después','Definir responsables del consultor y del consultante','Asignar todo al consultor','Asignar todo al cliente'], answer:1, explanation:'Aclarar roles de ambas partes.'},
+      {id:85, elem:3, type:'mc', q:'Además de diagnóstico y plan, la propuesta de trabajo incluye:', options:['Solo costos','Alcance, solución, entregables, riesgos, responsabilidades, costo','Solo organigramas','Solo anexos'], answer:1, explanation:'Listado completo de la propuesta.'},
+      {id:86, elem:3, type:'mc', q:'¿Cómo sabré si avanzamos? Debes mostrar:', options:['Fotos del equipo','Indicadores de avance y mecanismos de control y seguimiento','CV del consultor','Contrato de arrendamiento'], answer:1, explanation:'Evidencias de gestión y monitoreo.'},
+      {id:87, elem:3, type:'mc', q:'Documento con pagos y confidencialidad:', options:['Propuesta de trabajo','Registro de acuerdos','Guía de entrevista','Cuestionario'], answer:1, explanation:'Ahí se formalizan condiciones y cláusulas.'},
+      {id:88, elem:3, type:'mc', q:'Preocupación por implantación. Debes explicar:', options:['Solo beneficios','Tiempos, recursos, impactos y mitigación','Nada; es obvio','Solo riesgos legales'], answer:1, explanation:'Implicaciones operativas completas.'},
+      {id:89, elem:3, type:'mc', q:'Actitudes observables en Elemento 3:', options:['Limpieza y orden','Creatividad','Negociación','Carisma'], answer:0, explanation:'Se evalúa forma y secuencia.'},
+      {id:90, elem:3, type:'mc', q:'Documento con tachaduras afecta principalmente:', options:['Orden','Limpieza','Responsabilidad','Creatividad'], answer:1, explanation:'Limpieza exige presentación clara.'},
+      {id:91, elem:3, type:'mc', q:'Exponer sin seguir la lógica metodológica afecta:', options:['Orden','Limpieza','Responsabilidad','Puntualidad'], answer:0, explanation:'El orden exige secuencia correcta.'},
+      {id:92, elem:3, type:'mc', q:'Cierre breve para convencer debe incluir:', options:['Agradecimiento solamente','Resumen: diagnóstico, alcance, solución, etapas, entregables, roles y costo/beneficio','Solo costos','Solo alcance'], answer:1, explanation:'Incluye todos los puntos clave del estándar.'}
+    ];
+
+    let order=[]; const answered=new Map();
+    let quizEl, scoreBox, resultsEl, btnEnd, btnRestart, btnPrev, btnNext, metaCount, errEl;
+    let currentPage=1; const pageSize=20;
+
+    function renderAll(){
+      const total=QUESTIONS.length; const totalPages=Math.max(1, Math.ceil(total/pageSize)); if(currentPage>totalPages) currentPage=totalPages;
+      const start=(currentPage-1)*pageSize; const end=Math.min(start+pageSize,total);
+      quizEl.innerHTML=''; for(let i=start;i<end;i++){ const idx=order[i]; quizEl.appendChild(renderQuestionCard(QUESTIONS[idx])); }
+      updateScore(); resultsEl.classList.add('hidden'); metaCount.textContent=`Preguntas totales: ${total} · Página ${currentPage}/${totalPages}`;
+      btnPrev.disabled=currentPage<=1; btnNext.disabled=currentPage>=totalPages;
+    }
+
+    function renderQuestionCard(q){
+      const card=document.createElement('article'); card.className='card'; card.id=`q-${q.id}`;
+      const badge=document.createElement('span'); badge.className='badge '+(q.elem===1?'badge-elem1':q.elem===2?'badge-elem2':'badge-elem3'); badge.textContent=`Elemento ${q.elem}`;
+      const title=document.createElement('h2'); title.className='question-title'; title.textContent=`${q.id}. ${q.q}`;
+      const optionsWrap=document.createElement('div'); optionsWrap.className='options';
+      q.options.forEach((opt,i)=>{ const label=document.createElement('label'); label.className='option'; label.setAttribute('tabindex','0'); const input=document.createElement('input'); input.type='radio'; input.name=`q-${q.id}`; input.value=String(i); input.addEventListener('change',()=>handleAnswer(q,i,label,optionsWrap)); const span=document.createElement('span'); span.textContent=opt; label.appendChild(input); label.appendChild(span); optionsWrap.appendChild(label); });
+      const feedback=document.createElement('div'); feedback.id=`fb-${q.id}`; feedback.className='feedback muted'; feedback.textContent='Selecciona una opción para ver la explicación.';
+      card.appendChild(badge); card.appendChild(title); card.appendChild(optionsWrap); card.appendChild(feedback); return card;
+    }
+
+    function handleAnswer(q, selectedIndex, selectedLabel, optionsWrap){
+      const correct=selectedIndex===q.answer; for(const label of optionsWrap.children){ label.classList.remove('correct','incorrect'); }
+      selectedLabel.classList.add(correct?'correct':'incorrect'); const correctLabel=optionsWrap.children[q.answer]; if(correctLabel && !correct) correctLabel.classList.add('correct');
+      answered.set(q.id,{correct}); updateScore(); const fb=document.getElementById(`fb-${q.id}`); fb.classList.remove('ok','err','muted'); fb.classList.add(correct?'ok':'err'); fb.innerHTML=(correct?'✅ Correcto. ':'❌ Incorrecto. ')+(q.explanation||'');
+    }
+
+    function updateScore(){ let ok=0,bad=0; for(const [,res] of answered.entries()){ if(res.correct) ok++; else bad++; } scoreBox.textContent=`✅ ${ok} correctas · ❌ ${bad} incorrectas`; }
+
+    function finishNow(){ const total=QUESTIONS.length; let ok=0,bad=0; for(const [,res] of answered.entries()){ if(res.correct) ok++; else bad++; } const unanswered=total-(ok+bad); const grade=Math.round((ok/total)*100); resultsEl.classList.remove('hidden'); resultsEl.innerHTML=`<h3>Resultado</h3><p><strong>Calificación:</strong> ${grade}/100</p><p>✅ Correctas: ${ok} · ❌ Incorrectas: ${bad} · ⏳ Sin responder: ${unanswered}</p><div class="footer"><button class="btn btn-success" type="button" id="btnRestart2">Volver a tomar</button><button class="btn" type="button" id="btnTop">Ir al inicio</button></div>`; document.getElementById('btnRestart2').addEventListener('click', restart); document.getElementById('btnTop').addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'})); resultsEl.scrollIntoView({behavior:'smooth'}); }
+
+    function restart(){ try{ answered.clear(); order=shuffle([...Array(QUESTIONS.length).keys()]); currentPage=1; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); } catch(e){ showError(e); } }
+
+    function showError(e){ if(!errEl) return; errEl.style.display='block'; errEl.textContent='⚠️ Error: '+(e&&e.message?e.message:e); console.error(e); }
+
+    document.addEventListener('DOMContentLoaded', function(){ try{ quizEl=document.getElementById('quiz'); scoreBox=document.getElementById('scoreBox'); resultsEl=document.getElementById('results'); btnEnd=document.getElementById('btnEnd'); btnRestart=document.getElementById('btnRestart'); errEl=document.getElementById('err'); btnPrev=document.getElementById('btnPrev'); btnNext=document.getElementById('btnNext'); metaCount=document.getElementById('metaCount'); if(!quizEl||!scoreBox||!resultsEl||!btnEnd||!btnRestart||!btnPrev||!btnNext||!metaCount){ throw new Error('No se encontraron elementos de UI.'); } btnEnd.addEventListener('click', finishNow); btnRestart.addEventListener('click', restart); btnPrev.addEventListener('click', ()=>{ if(currentPage>1){ currentPage--; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); } }); btnNext.addEventListener('click', ()=>{ currentPage++; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); }); restart(); }catch(e){ showError(e); } });
+  })();
+  </script>
+</body>
+</html>
