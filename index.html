@@ -3,24 +3,43 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>EC0249 – Cuestionario interactivo (v4)</title>
+  <title>EC0249 – Cuestionario interactivo (v5, banco completo)</title>
   <style>
-    :root { --bg:#0f172a; --card:#111827; --text:#e5e7eb; --accent:#3b82f6; --warn:#ef4444; --ok:#10b981; --border:#1f2937; --shadow:0 10px 25px rgba(0,0,0,.35);} *{box-sizing:border-box}
-    html,body{height:100%} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial;background:linear-gradient(180deg,#0b1220,#0f172a);color:var(--text)}
+    :root{--bg:#0f172a;--card:#111827;--text:#e5e7eb;--accent:#3b82f6;--warn:#ef4444;--ok:#10b981;--border:#1f2937;--shadow:0 8px 24px rgba(0,0,0,.35)}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica Neue,Arial;background:linear-gradient(180deg,#0b1220,#0f172a);color:var(--text)}
     .container{max-width:1000px;margin:24px auto;padding:16px}
     header{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow)}
-    header h1{font-size:clamp(1.1rem,2.5vw,1.35rem);margin:0} header .meta{font-size:.95rem;color:#cbd5e1}
+    header h1{font-size:clamp(1.1rem,2.5vw,1.35rem);margin:0}
+    header .meta{font-size:.95rem;color:#cbd5e1}
     .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    button, select{border:1px solid var(--border);background:#0b1220;color:var(--text);padding:10px 14px;border-radius:12px;cursor:pointer;transition:transform .05s ease,background .2s ease,border-color .2s ease}
-    button:hover{background:#0f172a} button:active{transform:translateY(1px)} .btn-primary{background:var(--accent);border-color:#1d4ed8;color:#fff} .btn-danger{background:var(--warn);border-color:#b91c1c;color:#fff} .btn-success{background:var(--ok);border-color:#047857;color:#fff}
+    button,select{border:1px solid var(--border);background:#0b1220;color:var(--text);padding:10px 14px;border-radius:12px;cursor:pointer;transition:transform .05s ease,background .2s ease,border-color .2s ease}
+    button:hover{background:#0f172a}
+    button:active{transform:translateY(1px)}
+    .btn{background:#1f2937;color:#fff}
+    .btn-primary{background:var(--accent);border-color:#1d4ed8}
+    .btn-danger{background:var(--warn);border-color:#b91c1c}
+    .btn-success{background:var(--ok);border-color:#047857}
     .score{display:inline-flex;gap:10px;align-items:center;padding:8px 12px;border-radius:12px;background:#0b1220;border:1px solid var(--border)}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-top:16px;box-shadow:var(--shadow)} .question-title{font-weight:700;font-size:1.05rem;margin:0 0 10px}
-    .badge{display:inline-block;padding:2px 8px;border-radius:9999px;font-size:.8rem;border:1px solid var(--border);color:#cbd5e1} .badge-elem1{background:rgba(59,130,246,.12)} .badge-elem2{background:rgba(34,197,94,.12)} .badge-elem3{background:rgba(234,179,8,.12)}
-    .options{display:grid;gap:8px;margin:8px 0 6px} .option{display:flex;gap:10px;align-items:center;border:1px solid var(--border);border-radius:12px;padding:10px 12px;cursor:pointer;background:#0b1220} .option input{margin:0}
-    .option.correct{outline:2px solid var(--ok);background:rgba(16,185,129,.08)} .option.incorrect{outline:2px solid var(--warn);background:rgba(239,68,68,.08)}
-    .feedback{margin-top:8px;font-size:.95rem} .feedback.ok{color:#86efac} .feedback.err{color:#fecaca}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-top:16px;box-shadow:var(--shadow)}
+    .question-title{font-weight:700;font-size:1.05rem;margin:0 0 10px}
+    .badge{display:inline-block;padding:2px 8px;border-radius:9999px;font-size:.8rem;border:1px solid var(--border);color:#cbd5e1}
+    .badge-elem1{background:rgba(59,130,246,.12)}
+    .badge-elem2{background:rgba(34,197,94,.12)}
+    .badge-elem3{background:rgba(234,179,8,.12)}
+    .options{display:grid;gap:8px;margin:8px 0 6px}
+    .option{display:flex;gap:10px;align-items:center;border:1px solid var(--border);border-radius:12px;padding:10px 12px;cursor:pointer;background:#0b1220}
+    .option input{margin:0}
+    .option.correct{outline:2px solid var(--ok);background:rgba(16,185,129,.08)}
+    .option.incorrect{outline:2px solid var(--warn);background:rgba(239,68,68,.08)}
+    .feedback{margin-top:8px;font-size:.95rem}
+    .feedback.ok{color:#86efac}
+    .feedback.err{color:#fecaca}
     .footer{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:16px;flex-wrap:wrap}
-    .muted{color:#94a3b8} .hidden{display:none!important} .option:focus-within{outline:2px dashed var(--accent)}
+    .muted{color:#94a3b8}
+    .hidden{display:none!important}
+    .option:focus-within{outline:2px dashed var(--accent)}
     #err{background:#7f1d1d;color:#fecaca;border:1px solid #b91c1c;padding:10px 12px;border-radius:12px;margin-top:16px;display:none}
   </style>
 </head>
@@ -28,7 +47,7 @@
   <div class="container">
     <header>
       <div>
-        <h1>EC0249 – Cuestionario interactivo (banco completo, v4)</h1>
+        <h1>EC0249 – Cuestionario interactivo (banco completo, v5)</h1>
         <div class="meta">Orden aleatorio · Retro inmediata · Termina cuando quieras</div>
         <div class="meta" id="metaCount">Cargando banco…</div>
       </div>
@@ -44,7 +63,7 @@
         <button id="btnNext" class="btn" type="button" title="Página siguiente">Siguiente ▶︎</button>
         <button id="btnEnd" class="btn btn-danger" type="button" title="Terminar ahora y ver calificación">Terminar ahora</button>
         <button id="btnRestart" class="btn btn-primary" type="button" title="Volver a tomar con nuevo orden">Reiniciar</button>
-        <button id="btnExport" class="btn" type="button" title="Exportar intento a CSV">Exportar CSV</button>
+        <button id="btnExport" class="btn btn-success" type="button" title="Exportar intento a CSV">Exportar CSV</button>
       </div>
     </header>
 
@@ -58,7 +77,7 @@
     'use strict';
     function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
 
-    // ===== BANCO ORIGINAL (1–92) =====
+    // ===== BANCO COMPLETO (1–92) =====
     const BASE_QUESTIONS = [
       {id:1, elem:1, type:'mc', q:'¿Cuál es el propósito principal de la entrevista en consultoría?', options:['Convencer al entrevistado','Obtener información del problema','Probar la solución diseñada','Medir indicadores'], answer:1, explanation:'La entrevista busca obtener información relativa a la situación o problema planteado.'},
       {id:2, elem:1, type:'tf', q:'En una entrevista semiestructurada se usan preguntas guía y se permiten nuevas según el contexto.', options:['Verdadero','Falso'], answer:0, explanation:'La semiestructurada combina estructura y flexibilidad.'},
@@ -72,7 +91,7 @@
       {id:10, elem:1, type:'tf', q:'Los indicadores solo miden costos, no calidad.', options:['Verdadero','Falso'], answer:1, explanation:'También miden calidad, tiempo, satisfacción, etc.'},
       {id:11, elem:3, type:'mc', q:'Ejemplo de indicador de avance por etapa:', options:['Cantidad de opiniones','% de actividades completadas según calendario','Nombre del consultor','Número de juntas realizadas (sin meta)'], answer:1, explanation:'El indicador debe vincularse a resultados/tiempos esperados.'},
       {id:12, elem:3, type:'mc', q:'Un buen indicador debe ser:', options:['Ambiguo','Claro, relevante y medible','Exclusivo del consultor','Sin relación a objetivos'], answer:1, explanation:'Debe ser específico, relevante y verificable.'},
-      {id:13, elem:1, type:'mc', q:'Diferencia correcta entre información interna y externa:', options:['Interna: pública; Externa: del consultante','Interna: del consultante; Externa: pública o del consultor','Ambas públicas','Interna solo financiera'], answer:1, explanation:'Interna = propia del consultante; Exerna = pública o del consultor.'},
+      {id:13, elem:1, type:'mc', q:'Diferencia correcta entre información interna y externa:', options:['Interna: pública; Externa: del consultante','Interna: del consultante; Externa: pública o del consultor','Ambas públicas','Interna solo financiera'], answer:1, explanation:'Interna = propia del consultante; Externa = pública o del consultor.'},
       {id:14, elem:1, type:'tf', q:'Una muestra representativa refleja a la población de estudio.', options:['Verdadero','Falso'], answer:0, explanation:'Representatividad es clave para inferir correctamente.'},
       {id:15, elem:1, type:'mc', q:'¿Cuál NO es característica deseable de una muestra?', options:['Representatividad','Pertinencia','Aleatoriedad','Subjetividad'], answer:3, explanation:'Subjetividad resta validez.'},
       {id:16, elem:1, type:'mc', q:'Ejemplos correctos de fuentes internas y externas:', options:['Internas: manuales y reportes; Externas: INEGI y estudios sectoriales','Internas: redes sociales; Externas: gastos de nómina','Internas: Wikipedia; Externas: archivos internos','No aplica'], answer:0, explanation:'Manuales/reportes (internos) y estadísticas públicas (externas).'},
@@ -172,15 +191,16 @@
 
     const QUESTIONS = BASE_QUESTIONS.concat(EXTRA_QUESTIONS);
 
-    let order=[]; const answered=new Map(); // Map<id, {correct:boolean, selected:number, qref:Object}>
+    let order=[]; const answered=new Map();
     let quizEl, scoreBox, resultsEl, btnEnd, btnRestart, btnPrev, btnNext, metaCount, errEl, selPageSize, btnExport;
-    let currentPage=1; let pageSize=20;
+    let currentPage=1; let pageSize=20; let reviewing=false;
 
     function renderAll(){
       const total=QUESTIONS.length; const totalPages=Math.max(1, Math.ceil(total/pageSize)); if(currentPage>totalPages) currentPage=totalPages;
       const start=(currentPage-1)*pageSize; const end=Math.min(start+pageSize,total);
-      quizEl.innerHTML=''; for(let i=start;i<end;i++){ const idx=order[i]; quizEl.appendChild(renderQuestionCard(QUESTIONS[idx])); }
-      updateScore(); resultsEl.classList.add('hidden'); metaCount.textContent=`Preguntas totales: ${total} · Página ${currentPage}/${totalPages}`;
+      quizEl.innerHTML='';
+      for(let i=start;i<end;i++){ const idx=order[i]; quizEl.appendChild(renderQuestionCard(QUESTIONS[idx])); }
+      updateScore(); resultsEl.classList.add('hidden'); metaCount.textContent= reviewing ? `Repaso de falladas (${end-start})` : `Preguntas totales: ${total} · Página ${currentPage}/${totalPages}`;
       btnPrev.disabled=currentPage<=1; btnNext.disabled=currentPage>=totalPages;
     }
 
@@ -202,14 +222,16 @@
 
     function updateScore(){ let ok=0,bad=0; for(const [,res] of answered.entries()){ if(res.correct) ok++; else bad++; } scoreBox.textContent=`✅ ${ok} correctas · ❌ ${bad} incorrectas`; }
 
-    function finishNow(){ const total=QUESTIONS.length; let ok=0,bad=0; const wrongIds=[]; for(const [id,res] of answered.entries()){ if(res.correct) ok++; else { bad++; wrongIds.push(Number(id)); } } const unanswered=total-(ok+bad); const grade=Math.round((ok/total)*100); resultsEl.classList.remove('hidden'); resultsEl.innerHTML=`<h3>Resultado</h3><p><strong>Calificación:</strong> ${grade}/100</p><p>✅ Correctas: ${ok} · ❌ Incorrectas: ${bad} · ⏳ Sin responder: ${unanswered}</p><div class="footer"><div><button class="btn btn-success" type="button" id="btnRestart2">Volver a tomar</button> <button class="btn" type="button" id="btnTop">Ir al inicio</button></div><div><button class="btn" id="btnReviewWrong" ${wrongIds.length?'':'disabled'}>Repasar falladas</button></div></div>`; document.getElementById('btnRestart2').addEventListener('click', restart); document.getElementById('btnTop').addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'})); const reviewBtn=document.getElementById('btnReviewWrong'); if(reviewBtn){ reviewBtn.addEventListener('click', ()=>reviewWrong(wrongIds)); } resultsEl.scrollIntoView({behavior:'smooth'}); }
+    function finishNow(){ const total=QUESTIONS.length; let ok=0,bad=0; const wrongIds=[]; for(const [id,res] of answered.entries()){ if(res.correct) ok++; else { bad++; wrongIds.push(Number(id)); } } const unanswered=total-(ok+bad); const grade=Math.round((ok/total)*100); 
+      // Limpia las preguntas para evitar la "repetición" visual
+      quizEl.innerHTML=''; reviewing=false; 
+      resultsEl.classList.remove('hidden'); resultsEl.innerHTML=`<h3>Resultado</h3><p><strong>Calificación:</strong> ${grade}/100</p><p>✅ Correctas: ${ok} · ❌ Incorrectas: ${bad} · ⏳ Sin responder: ${unanswered}</p><div class="footer"><div><button class="btn btn-success" type="button" id="btnRestart2">Volver a tomar</button> <button class="btn" type="button" id="btnTop">Ir al inicio</button></div><div><button class="btn" id="btnReviewWrong" ${wrongIds.length?'':'disabled'}>Repasar falladas</button></div></div>`; document.getElementById('btnRestart2').addEventListener('click', restart); document.getElementById('btnTop').addEventListener('click', ()=>window.scrollTo({top:0,behavior:'smooth'})); const reviewBtn=document.getElementById('btnReviewWrong'); if(reviewBtn){ reviewBtn.addEventListener('click', ()=>reviewWrong(wrongIds)); } resultsEl.scrollIntoView({behavior:'smooth'}); }
 
-    function reviewWrong(wrongIds){ if(!wrongIds || !wrongIds.length){ return; } // Reordenar solo con falladas
-      order = wrongIds.map(id => QUESTIONS.findIndex(q=>q.id===id)); currentPage=1; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); }
+    function reviewWrong(wrongIds){ if(!wrongIds || !wrongIds.length){ return; } reviewing=true; order = wrongIds.map(id => QUESTIONS.findIndex(q=>q.id===id)); currentPage=1; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); }
 
-    function restart(){ try{ answered.clear(); order=shuffle([...Array(QUESTIONS.length).keys()]); currentPage=1; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); } catch(e){ showError(e); } }
+    function restart(){ try{ answered.clear(); order=shuffle([...Array(QUESTIONS.length).keys()]); currentPage=1; reviewing=false; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); } catch(e){ showError(e); } }
 
-    function exportCSV(){ try{ const rows=[['timestamp','id','elemento','tipo','pregunta','opcion_seleccionada','indice_correcto','correcta?']]; const ts=new Date().toISOString(); for(const q of QUESTIONS){ const r=answered.get(q.id); if(!r) continue; const sel = (typeof r.selected==='number') ? q.options[r.selected] : ''; const correctIdx = q.answer; rows.push([ts, String(q.id), String(q.elem), q.type, q.q.replace(/\n/g,' '), sel, String(correctIdx), r.correct?'1':'0']); } const csv = rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(',')).join('\n'); const blob = new Blob([csv], {type:'text/csv'}); const a=document.createElement('a'); const dt=new Date(); const fname=`EC0249-intento-${dt.getFullYear()}${String(dt.getMonth()+1).padStart(2,'0')}${String(dt.getDate()).padStart(2,'0')}-${String(dt.getHours()).padStart(2,'0')}${String(dt.getMinutes()).padStart(2,'0')}.csv`; a.href=URL.createObjectURL(blob); a.download=fname; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000); } catch(e){ showError(e); } }
+    function exportCSV(){ try{ const rows=[['timestamp','id','elemento','tipo','pregunta','opcion_seleccionada','indice_correcto','correcta?']]; const ts=new Date().toISOString(); for(const q of QUESTIONS){ const r=answered.get(q.id); if(!r) continue; const sel = (typeof r.selected==='number') ? q.options[r.selected] : ''; const correctIdx = q.answer; rows.push([ts, String(q.id), String(q.elem||''), q.type||'', q.q.replace(/\n/g,' '), sel, String(correctIdx), r.correct?'1':'0']); } const csv = rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(',')).join('\n'); const blob = new Blob([csv], {type:'text/csv'}); const a=document.createElement('a'); const dt=new Date(); const fname=`EC0249-intento-${dt.getFullYear()}${String(dt.getMonth()+1).padStart(2,'0')}${String(dt.getDate()).padStart(2,'0')}-${String(dt.getHours()).padStart(2,'0')}${String(dt.getMinutes()).padStart(2,'0')}.csv`; a.href=URL.createObjectURL(blob); a.download=fname; document.body.appendChild(a); a.className='btn btn-success'; a.textContent='Descargar CSV'; a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000); } catch(e){ showError(e); } }
 
     function showError(e){ if(!errEl) return; errEl.style.display='block'; errEl.textContent='⚠️ Error: '+(e&&e.message?e.message:e); console.error(e); }
 
