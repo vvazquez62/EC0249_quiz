@@ -1,9 +1,14 @@
+App Ec0249 – V6 (banco Completo + Refuerzo Del Resumen)
+· html
 # EC0249 – Cuestionario Interactivo
 
 Este repositorio contiene una aplicación web en HTML/JavaScript que permite practicar el **estándar de competencia EC0249** mediante un cuestionario interactivo.
 
 ## 🚀 Características
-- Banco completo de **104 preguntas** (92 originales + 12 de refuerzo).
+- Banco completo de **116 preguntas**:
+  - 92 originales del estándar.
+  - 12 adicionales de refuerzo (habilidades, ética, cuestionarios, diagnóstico).
+  - 12 nuevas tomadas del **Resumen de Contenido Temático EC0249** (entrevistas, codificación, indicadores, validez, metodología, etc.).
 - Orden aleatorio en cada intento.
 - Retroalimentación inmediata (correcto/incorrecto con explicación).
 - Navegación con paginación (10/20/30 preguntas por página).
@@ -22,8 +27,20 @@ Este repositorio contiene una aplicación web en HTML/JavaScript que permite pra
 3. Guarda y espera unos minutos.
 4. Tu cuestionario quedará disponible en la URL:
    ```
-   https://TU-USUARIO.github.io/NOMBRE-DEL-REPO/
+   https://vvazquez62.github.io/EC0249_quiz/
    ```
+
+## 📚 Qué estudiar para asegurar 100/100
+El banco cubre:
+- **Entrevistas**: tipos (estructurada, semiestructurada, no estructurada, individual, grupal, personal en campo), pasos, guías, codificación.
+- **Cuestionarios**: abiertos vs cerrados, confidencialidad, instrucciones, secciones.
+- **Fuentes de información**: internas, externas, registros, validez de datos.
+- **Metodología de investigación de problemas**: pasos, uso de matrices y diagramas.
+- **Indicadores**: definición, serie de tiempo, índices, control de avances.
+- **Diagnóstico**: visita de campo, afectaciones, análisis de causas, temas críticos.
+- **Solución diseñada**: alternativas, ventajas/desventajas, matriz comparativa.
+- **Propuesta definitiva**: plan de trabajo, actividades, responsabilidades, riesgos, costo/beneficio.
+- **Valores y actitudes**: orden, limpieza y responsabilidad en cada elemento.
 
 ## 🗑 Cómo borrar archivos que no sirven en GitHub
 - Entra a tu repositorio en GitHub.
@@ -33,3 +50,4 @@ Este repositorio contiene una aplicación web en HTML/JavaScript que permite pra
 
 ## 📄 Licencia
 Uso libre para fines educativos y de práctica en EC0249.
+
