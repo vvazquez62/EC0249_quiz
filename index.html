@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>EC0249 – Cuestionario interactivo (v5, banco completo)</title>
+  <title>EC0249 – Cuestionario interactivo (v6, banco completo)</title>
   <style>
     :root{--bg:#0f172a;--card:#111827;--text:#e5e7eb;--accent:#3b82f6;--warn:#ef4444;--ok:#10b981;--border:#1f2937;--shadow:0 8px 24px rgba(0,0,0,.35)}
     *{box-sizing:border-box}
@@ -47,7 +47,7 @@
   <div class="container">
     <header>
       <div>
-        <h1>EC0249 – Cuestionario interactivo (banco completo, v5)</h1>
+        <h1>EC0249 – Cuestionario interactivo (banco completo, v6)</h1>
         <div class="meta">Orden aleatorio · Retro inmediata · Termina cuando quieras</div>
         <div class="meta" id="metaCount">Cargando banco…</div>
       </div>
@@ -110,7 +110,7 @@
       {id:29, elem:1, type:'mc', q:'Una instrucción de llenado correcta sería:', options:['Responda como quiera','Marque una sola opción por pregunta','No hay instrucciones','No conteste si no quiere'], answer:1, explanation:'Claridad y precisión facilitan calidad de datos.'},
       {id:30, elem:1, type:'mc', q:'Sección NO obligatoria del cuestionario según EC0249:', options:['Propósito','Firmas del evaluador','Instrucciones de llenado','Agradecimientos'], answer:1, explanation:'El evaluador no firma cuestionarios.'},
       {id:31, elem:1, type:'mc', q:'Afectación de la situación actual es:', options:['Catálogo de riesgos','Diferencia entre situación deseada y actual','Plan de trabajo','Reporte de campo'], answer:1, explanation:'Definición de glosario del estándar.'},
-      {id:32, elem:1, type:'tf', q:'Interna = del consultante; Externa = pública o del consultor.', options:['Verdadero','Falso'], answer:0, explanation:'Definición del glosario EC0249.'},
+      {id:32, elem:1, type:'tf', q:'Interna = del consultante; Externa = pública o del consultor.', options:['Verdadero','Falso'], answer:0, explanation:'Definición de glosario EC0249.'},
       {id:33, elem:3, type:'mc', q:'Indicador de avance adecuado para plan de trabajo:', options:['% de actividades completadas por etapa','Nombre del consultante','Listado de reuniones','Color del documento'], answer:0, explanation:'Vinculado a calendario y resultados.'},
       {id:34, elem:3, type:'mc', q:'El plan de trabajo debe incluir:', options:['Confidencialidad y PI','Actividades y recursos','Perfil del evaluador','Historial del consultor'], answer:1, explanation:'Confidencialidad/PI van en registro de acuerdos.'},
       {id:35, elem:3, type:'tf', q:'Las actividades deben tener calendario, responsable, indicadores, control y seguimiento.', options:['Verdadero','Falso'], answer:0, explanation:'Listado explícito del estándar.'},
@@ -189,7 +189,23 @@
       { id:104, elem:3, type:'mc', q:'Para validar que el público comprendió el plan por etapas, el consultor debe:', options:['Cerrar sin confirmar','Preguntar “¿todo bien?” y seguir','Solicitar retro de comprensión y resumir entregables, responsables e indicadores','Limitarse a leer diapositivas'], answer:2, explanation:'Checar comprensión y sintetizar entregables, responsables e indicadores asegura alineación.' }
     ];
 
-    const QUESTIONS = BASE_QUESTIONS.concat(EXTRA_QUESTIONS);
+    // ===== NUEVO MINI-PACK (105–116) desde RESUMEN TEMÁTICO =====
+    const EXTRA2_QUESTIONS = [
+      { id:105, elem:1, type:'mc', q:'¿Cuál es el objetivo principal de una ENTREVISTA INDIVIDUAL en EC0249?', options:['Obtener información personalizada','Recabar información masiva','Capacitar al evaluado','Medir indicadores de avance'], answer:0, explanation:'La entrevista individual busca información específica y profunda del informante.' },
+      { id:106, elem:1, type:'mc', q:'¿Para qué se usan ENTREVISTAS GRUPALES en el contexto del estándar?', options:['Para persuadir al equipo','Para recabar información masiva en menor tiempo','Para calificar desempeño del consultor','Para sustituir la visita de campo'], answer:1, explanation:'Permiten obtener muchas respuestas en poco tiempo cuando procede.' },
+      { id:107, elem:1, type:'mc', q:'Una ENTREVISTA PERSONAL (en campo) se caracteriza por:', options:['Aplicarse en gabinete','Interrogatorio directo en la población objetivo','No requiere guía','Siempre es telefónica'], answer:1, explanation:'Se realiza directamente con la población en su contexto.' },
+      { id:108, elem:1, type:'mc', q:'La CODIFICACIÓN de entrevistas se refiere a:', options:['Transcribir palabra por palabra','Agrupar respuestas en categorías para analizarlas','Editar el cuestionario','Asignar entrevistadores'], answer:1, explanation:'Codificar = categorizar respuestas para facilitar el análisis.' },
+      { id:109, elem:3, type:'mc', q:'Un INDICADOR se construye para:', options:['Registrar el cambio de una variable a lo largo del tiempo','Contar entrevistas realizadas','Sustituir la propuesta','Evitar el análisis cualitativo'], answer:0, explanation:'Sirve para medir evolución de variables y evaluar avance.' },
+      { id:110, elem:3, type:'mc', q:'Una SERIE DE TIEMPO es:', options:['Un promedio simple','Una secuencia de observaciones ordenadas en el tiempo','Una muestra aleatoria única','Un contrato de servicios'], answer:1, explanation:'Permite observar tendencias y realizar predicciones.' },
+      { id:111, elem:3, type:'mc', q:'Un ÍNDICE en análisis de información es:', options:['Un cuestionario con números','Una categorización numérica/descriptiva que simplifica datos para decidir','Una gráfica obligatoria de barras','Un registro contable'], answer:1, explanation:'Los índices sintetizan información para la toma de decisiones.' },
+      { id:112, elem:1, type:'mc', q:'Los REGISTROS como fuente de información incluyen:', options:['Solo documentos financieros','Documentos, archivos, microfilmes, fotos y gráficos','Únicamente entrevistas','Solo bases de datos públicas'], answer:1, explanation:'El estándar contempla varios formatos documentales como registros.' },
+      { id:113, elem:1, type:'mc', q:'La VALIDEZ de un instrumento se refiere a:', options:['Qué tan consistente es la aplicación','Qué tan bien recoge la información esperada para el objetivo','La cantidad de preguntas que tiene','El tiempo que tarda en aplicarse'], answer:1, explanation:'Validez = grado en que mide lo que pretende medir.' },
+      { id:114, elem:1, type:'mc', q:'Secuencia correcta de la METODOLOGÍA para investigar un problema:', options:['Construir proyecto → Elegir tema → Tomar notas','Elegir tema → Encontrar info → Redefinir tema → Seleccionar y evaluar → Tomar notas → Construir proyecto','Tomar notas → Redefinir → Elegir tema → Construir proyecto','Encontrar info → Construir proyecto → Elegir tema'], answer:1, explanation:'Sigue la progresión: tema, búsqueda, redefinición, evaluación, notas y construcción.' },
+      { id:115, elem:2, type:'mc', q:'Para organizar, validar y analizar información, el estándar recomienda:', options:['Impresiones y firmas','Matriz de evaluación y diagramas','Memorizar respuestas','Solo software propietario'], answer:1, explanation:'Matrices y diagramas facilitan objetividad y trazabilidad.' },
+      { id:116, elem:1, type:'tf', q:'Los cuestionarios abiertos buscan opiniones; los cerrados, información precisa y cuantificable.', options:['Verdadero','Falso'], answer:0, explanation:'Los abiertos enfatizan narrativa; los cerrados facilitan medición y tabulación.' }
+    ];
+
+    const QUESTIONS = BASE_QUESTIONS.concat(EXTRA_QUESTIONS).concat(EXTRA2_QUESTIONS);
 
     let order=[]; const answered=new Map();
     let quizEl, scoreBox, resultsEl, btnEnd, btnRestart, btnPrev, btnNext, metaCount, errEl, selPageSize, btnExport;
